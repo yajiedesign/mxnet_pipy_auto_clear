@@ -43,15 +43,12 @@ def one_project(project_name):
 
             year_week_list = bucket[year_week]
             if len(year_week_list) == 1:
-                obj.write("{0} keep\n".format(year_week_list[0][1]))
+                obj.write("{0}\tgood\tkeep\n".format(year_week_list[0][1]))
                 continue
             year_week_list.sort(key=lambda e: e[0])
             out_list = []
             is_find_keep = False
             for item in reversed(year_week_list):
-                if is_find_keep:
-                    out_list.append((item[1], "delete"))
-                    continue
                 release = releases[item[1]]
                 find_set = set()
                 for release_item in release:
@@ -60,16 +57,19 @@ def one_project(project_name):
                         if f in filename:
                             find_set.add(f)
                 if len(find_set) == len(must_find):
-                    is_find_keep = True
-                    out_list.append((item[1], "keep"))
+                    if is_find_keep:
+                        out_list.append((item[1], "good", "delete"))
+                    else:
+                        is_find_keep = True
+                        out_list.append((item[1], 'good', "keep"))
                 else:
-                    out_list.append((item[1], "delete"))
+                    out_list.append((item[1], "bad ", "delete"))
             if not is_find_keep:
                 for i in reversed(out_list):
-                    obj.write("{0} error\n".format(i[0]))
+                    obj.write("{0}\t{1}\terror\n".format(i[0],i[1]))
             else:
                 for i in reversed(out_list):
-                    obj.write("{0} {1}\n".format(*i))
+                    obj.write("{0}\t{1}\t{2}\n".format(*i))
 
 
 if __name__ == '__main__':

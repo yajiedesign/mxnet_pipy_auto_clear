@@ -23,7 +23,7 @@ def del_one_release(s, project, version):
 def del_one_project(s, project):
     with open("want_del/{0}.txt".format(project), "r", encoding="utf-8") as obj:
         for line in obj:
-            sp = line.strip().split(" ")
+            sp = line.strip().split("\t")
             if sp[1] == "delete":
                 del_one_release(s, project, sp[0])
 
@@ -36,9 +36,9 @@ def main():
     login_first_html = etree.HTML(login_first.content)
     csrf_token = login_first_html.xpath('//*[@id="content"]/section/div/form/input')[0].attrib["value"]
 
-    with open("setting.txt","r",encoding="utf-8") as obj:
+    with open("setting.txt", "r", encoding="utf-8") as obj:
         lines = obj.readlines()
-        
+
     post_data = {"csrf_token": csrf_token, "username": lines[0].strip(),
                  "password": lines[1].strip()}
     rs = s.post(login_url, post_data, headers={'referer': login_url})
