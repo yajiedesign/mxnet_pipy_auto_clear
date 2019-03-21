@@ -24,7 +24,7 @@ def del_one_project(s, project):
     with open("want_del/{0}.txt".format(project), "r", encoding="utf-8") as obj:
         for line in obj:
             sp = line.strip().split("\t")
-            if sp[1] == "delete":
+            if sp[2] == "delete":
                 del_one_release(s, project, sp[0])
 
 
